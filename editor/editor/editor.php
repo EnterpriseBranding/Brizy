@@ -128,16 +128,17 @@ class Brizy_Editor_Editor_Editor {
 				'id' => $this->project->getId()
 			),
 			'urls'            => array(
-				'site'             => home_url(),
-				'api'              => home_url( '/wp-json/v1' ),
-				'assets'           => $this->urlBuilder->editor_build_url(),
-				'image'            => $this->urlBuilder->external_media_url() . "",
-				'blockThumbnails'  => $this->urlBuilder->external_asset_url( 'template/img-block-thumbs' ) . "",
-				'templateIcons'    => $this->urlBuilder->proxy_url( 'template/icons' ),
-				'templateFonts'    => 'https://app.brizy.io/fonts/public?path=' . BRIZY_EDITOR_VERSION,
-				'pagePreview'      => $preview_post_link,
-				'about'            => __bt( 'about-url', apply_filters( 'brizy_about_url', Brizy_Config::ABOUT_URL ) ),
-				'backToDashboard'  => get_edit_post_link( $wp_post_id, null ),
+				'site'               => home_url(),
+				'api'                => home_url( '/wp-json/v1' ),
+				'assets'             => $this->urlBuilder->editor_build_url(),
+				'image'              => $this->urlBuilder->external_media_url() . "",
+				'blockThumbnails'    => $this->urlBuilder->external_asset_url( 'kits/thumbs' ) . "",
+				'templateThumbnails' => $this->urlBuilder->external_asset_url( 'templates/thumbs' ) . "",
+				'templateIcons'      => $this->urlBuilder->proxy_url( 'editor/icons' ),
+				'templateFonts'      => 'https://app.brizy.io/fonts/public?path=' . BRIZY_EDITOR_VERSION,
+				'pagePreview'        => $preview_post_link,
+				'about'              => __bt( 'about-url', apply_filters( 'brizy_about_url', Brizy_Config::ABOUT_URL ) ),
+				'backToDashboard'    => get_edit_post_link( $wp_post_id, null ),
 
 				// wp specific
 				'changeTemplate'   => $change_template_url,
