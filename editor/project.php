@@ -47,6 +47,7 @@ class Brizy_Editor_Project implements Serializable {
 	protected $forms;
 	protected $cloud_token;
 	protected $cloud_project;
+	protected $editor_meta;
 	//---------------------------------------------------------------------------------------------------
 
 	/**
@@ -57,7 +58,7 @@ class Brizy_Editor_Project implements Serializable {
 	protected function __construct( WP_Post $post ) {
 		$this->post    = $post;
 		$this->storage = Brizy_Editor_Storage_Project::instance( $this->post->ID );
-		$this->loadProjectData();
+		$this->loadProjectData( $this->storage->get_storage() );
 	}
 
 	public function serialize() {
@@ -195,6 +196,7 @@ class Brizy_Editor_Project implements Serializable {
 			'signature'           => Brizy_Editor_Signature::get(),
 			'accounts'            => array(),
 			'forms'               => array(),
+			'editor_meta'         => base64_encode( file_get_contents( BRIZY_PLUGIN_PATH . DIRECTORY_SEPARATOR . "public" . DIRECTORY_SEPARATOR . "editor-build" . DIRECTORY_SEPARATOR . "defaults.json" ) ),
 			'brizy-license-key'   => null,
 			'brizy-cloud-token'   => null,
 			'brizy-cloud-project' => null,
@@ -226,15 +228,14 @@ class Brizy_Editor_Project implements Serializable {
 			'signature'           => $this->signature,
 			'accounts'            => $this->accounts,
 			'forms'               => $this->forms,
+			'editor_meta'         => $this->editor_meta,
 			'brizy-license-key'   => $this->license_key,
 			'brizy-cloud-token'   => $this->cloud_token,
 			'brizy-cloud-project' => $this->cloud_project,
 		);
 	}
 
-	protected function loadProjectData() {
-		$data = $this->storage->get_storage();
-
+	protected function loadProjectData( $data ) {
 		$this->id            = isset( $data['id'] ) ? $data['id'] : null;
 		$this->title         = isset( $data['title'] ) ? $data['title'] : null;
 		$this->globals       = isset( $data['globals'] ) ? $data['globals'] : null;
@@ -249,6 +250,7 @@ class Brizy_Editor_Project implements Serializable {
 		$this->signature     = isset( $data['signature'] ) ? $data['signature'] : null;
 		$this->accounts      = isset( $data['accounts'] ) ? $data['accounts'] : null;
 		$this->forms         = isset( $data['forms'] ) ? $data['forms'] : null;
+		$this->editor_meta   = isset( $data['editor_meta'] ) ? $data['editor_meta'] : null;
 		$this->license_key   = isset( $data['brizy-license-key'] ) ? $data['brizy-license-key'] : null;
 		$this->cloud_token   = isset( $data['brizy-cloud-token'] ) ? $data['brizy-cloud-token'] : null;
 		$this->cloud_project = isset( $data['brizy-cloud-project'] ) ? $data['brizy-cloud-project'] : null;
@@ -325,20 +327,7 @@ class Brizy_Editor_Project implements Serializable {
 			// @todo: copy data to autosave instance
 			$data = $this->getProjectData();
 
-			$autosavePost->setTitle( $data['title'] );
-			$autosavePost->setGlobals( $data['globals'] );
-			$autosavePost->setTemplate( $data['template'] );
-			$autosavePost->setCreated( $data['created'] );
-			$autosavePost->setUpdated( $data['updated'] );
-			$autosavePost->setLanguages( $data['languages'] );
-			$autosavePost->setPluginVersion( $data['pluginVersion'] );
-			$autosavePost->setEditorVersion( $data['editorVersion'] );
-			$autosavePost->setSignature( $data['signature'] );
-			$autosavePost->setAccounts( $data['accounts'] );
-			$autosavePost->setForms( $data['forms'] );
-			$autosavePost->setLicenseKey( $data['brizy-license-key'] );
-			$autosavePost->setCloudToken( $data['brizy-cloud-token'] );
-			$autosavePost->setCloudProject( $data['brizy-cloud-project'] );
+			$autosavePost->loadProjectData( $data );
 
 			$autosavePost->save();
 
@@ -645,6 +634,34 @@ class Brizy_Editor_Project implements Serializable {
 		$this->setGlobals( base64_encode( $globals ) );
 
 		return $this;
+	}
+
+	/**
+	 * @return mixed
+	 */
+	public function getEditorMeta() {
+		return $this->editor_meta;
+	}
+
+	/**
+	 * @param mixed $editor_meta
+	 *
+	 * @return Brizy_Editor_Project
+	 */
+	public function setEditorMeta( $editor_meta ) {
+		$this->editor_meta = $editor_meta;
+
+		return $this;
+	}
+
+	public function setEditorMetaAsJson( $meta ) {
+		$this->setEditorMeta( base64_encode( $meta ) );
+
+		return $this;
+	}
+
+	public function getEditorMetaAsJson() {
+		return base64_decode( $this->getEditorMeta() );
 	}
 
 	/**
