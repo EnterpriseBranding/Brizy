@@ -201,7 +201,7 @@ class Brizy_Editor_API {
 	public function get_project() {
 		try {
 			$this->authorize();
-			$data = $this->create_post_globals();
+			$data = $this->create_post_data();
 
 			$this->success( $data );
 		} catch ( Exception $exception ) {
@@ -219,16 +219,9 @@ class Brizy_Editor_API {
 			$this->authorize();
 
 			// update project globas
-			$globals = stripslashes( $this->param( 'gb' ) );
 			$meta = stripslashes( $this->param( 'meta' ) );
 
-
 			$project = Brizy_Editor_Project::get();
-
-
-			if ( $globals ) {
-				$project->setGlobalsAsJson( $globals );
-			}
 
 			if ( $meta ) {
 				$project->setEditorMetaAsJson( $meta );
@@ -246,7 +239,7 @@ class Brizy_Editor_API {
 			}
 
 
-			$this->success( $this->create_post_globals() );
+			$this->success( $this->create_post_data() );
 		} catch ( Exception $exception ) {
 			Brizy_Logger::instance()->exception( $exception );
 			$this->error( $exception->getCode(), $exception->getMessage() );
@@ -408,15 +401,15 @@ class Brizy_Editor_API {
 	 * @return array
 	 * @throws Brizy_Editor_Exceptions_NotFound
 	 */
-	public function create_post_globals() {
+	public function create_post_data() {
 		$project = Brizy_Editor_Project::get();
-		$globals = array(
+		$data = array(
 			'id'   => $project->getId(),
-			'gb'   => $project->getGlobalsAsJson(),
-			'meta' => $project->getEditorMetaAsJson()
+			//'gb'   => $project->getGlobalsAsJson(),
+			'dada' => $project->getDataAsJson()
 		);
 
-		return $globals;
+		return $data;
 	}
 
 	public function get_post_list( $searchTerm, $postType, $excludePostType = array() ) {
