@@ -406,7 +406,7 @@ class Brizy_Editor_API {
 		$data = array(
 			'id'   => $project->getId(),
 			//'gb'   => $project->getGlobalsAsJson(),
-			'dada' => $project->getDataAsJson()
+			'data' => $project->getDataAsJson()
 		);
 
 		return $data;
